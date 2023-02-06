@@ -19,9 +19,9 @@ double a[n][n + 1] = { {5, 7,  6,  5, 23.1},   //матрица коэффици
 {5, 7,  9,   10, 31.1} };
 
 double b[n][n] = {};
-
 double c[n][n] = {};
-
+double tempX[n], perX[n];
+double disrep[n] = {};
 
 void isPrime(double val)
 {
@@ -98,13 +98,40 @@ void ReversedMatr()
         }
     }
 
-    /*for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                b[i][j] = c[i][j];*/
 }
 
 
-void main()
+void Disrep()
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            b[i][j] = a[i][j];            
+        }       
+    }
+    cout << "\n";
+    //for (int i = 0; i < n; i++)
+    //{       
+    //    tempX[i] = a[i][n];      
+    //}
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << tempX[i] << " ";
+        cout << "\n";
+    }
+    for (int i = 0; i < n; i++)
+    {
+        disrep[i] = tempX[i];
+        for (int j = 0; j < n; j++)
+        {
+            disrep[i] -= b[i][j] * perX[j];
+        }
+    }
+}
+
+int main()
 {
 
     setlocale(LC_ALL, "Russian");
@@ -159,11 +186,10 @@ void main()
             }
         }       
         
-        det *= a[k][k] * pow((-1),perkol);  //Вычисление определителя матрицы
-        
-        temp = a[k][k];            
-        //a[k][k] = 1;
-        //Преобразование k-ой строки (Вычисление масштабирующих множителей)
+        det *= a[k][k] * pow((-1),perkol);  //Вычисление определителя матрицы        
+        temp = a[k][k];  
+
+        //Преобразование строк (Вычисление масштабирующих множителей)
         for (j = k; j < n + 1; j++)
         {
             a[k][j] = a[k][j] / temp;
@@ -176,12 +202,9 @@ void main()
                 for (j = k + 1; j < n + 1; j++)
                 {
                     a[i][j] = a[i][j] - bb * a[k][j];
-
                 }
         }
     }
-
-
 
     if (det == 0)   //Проверка определителя
     {
@@ -189,61 +212,52 @@ void main()
         exit(1);
     }
 
-    //Обратный ход
-    for (i = n - 1; i >= 0; i--)   //Нахождение решений СЛАУ
-    {
-        x[i] = 0;
-        aa = a[i][n];
-        for (j = n; j > i; j--)
-            aa = aa - a[i][j] * x[j];
-        x[i] = aa;
-    }
-    
-    //for (k = 0; k < n; k++) //Поиск максимального элемента в первом столбце
-    //{
-    //    for (j = k; j < n + 1; j++)
-    //        cout << " " << a[k][j];
-    //}
-    
-    cout << "Решение системы:" << endl;  //вывод решений
-    for (i = 0; i < n; i++)
-    {
-
-
-        //if (isPrime(x[i]))
-        cout << "x[" << i + 1 << "]=";// << x[i];
-        isPrime(x[i]); 
-        // // 
-        //else if (!isPrime(x[i]))
-        //    cout << "x[" << i + 1 << "]=" << fixed << setprecision(4) << x[i];
-        //else
-        //    cout << "s";
-        cout << endl; 
-        //std::setw(4);
-    }
-    cout << "Opr: " << det << endl;
-
-    //for (int i = 0; i < n; i++)
-    //{
-    //    for (int j = 0; j < n; j++)
-    //    {
-    //        cout << b[i][j] << " ";
-    //        //c[n][n] = a[n][n];
-    //    }
-    //    cout << "\n";
-    //}
-
-    cout << "\n";
-    
-
+    cout << "Преобразованная матрица: " << endl;
     for (i = 0; i < n; i++)
     {
         for (j = 0; j < n; j++)
         {
-            
+
+            cout << a[i][j] << " ";
+        }
+        cout << "\n";
+    }
+    //Обратный ход, нахождение X
+    for (i = n - 1; i >= 0; i--)   
+    {
+        x[i] = 0;
+        temp = a[i][n];
+        for (j = n; j > i; j--)
+            temp = temp - a[i][j] * x[j];
+        x[i] = temp;
+    }
+       
+    cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
+    for (i = 0; i < n; i++)
+    {
+        cout << "x[" << i + 1 << "]=";// << x[i];
+        tempX[i] = x[i];
+        perX[i] = x[i];
+        isPrime(x[i]); 
+        cout << endl; 
+
+    }
+    cout << "\n" << "Determinant : " << det << endl;
+    cout << "\n" <<"Обратная матрица:\n";
+    
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {           
             cout << c[i][j] << " ";
         }
         cout << "\n";
     }
-    system("PAUSE");
+    Disrep();
+    for (i = 0; i < n; i++)
+    {       
+        cout << disrep[i] << " ";       
+        cout << "\n";
+    }
+    return 0;
 }
