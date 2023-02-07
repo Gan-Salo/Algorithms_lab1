@@ -13,15 +13,17 @@ const int n = 4;
 int i, j, m, k, perkol = 0;
 double aa, bb, temp,  det = 1;
 
-double a[n][n + 1] = { {5, 7,  6,  5, 23.1},   //матрица коэффициентов, где последний столбец - правая часть системы
-{7, 10,  8,  7, 31.9},
-{6, 8,  10,   9, 32.9},
-{5, 7,  9,   10, 31.1} };
+double a[n][n + 2] = { {5, 7,  6,  5, 23.01, 1},   //матрица коэффициентов, где последний столбец - правая часть системы
+{7, 10,  8,  7, 31.99, 0},
+{6, 8,  10,   9, 32.99, 0},
+{5, 7,  9,   10, 31.01, 0} };
 
+double aCopy[n][n + 2] = {};
 double b[n][n] = {};
 double c[n][n] = {};
-double tempX[n], perX[n];
+double tempX[n], perX[n][n];
 double disrep[n] = {};
+
 
 void isPrime(double val)
 {
@@ -61,6 +63,7 @@ void ReversedMatr()
         }
     }
 
+    
     /*Приводим исходную матрицу к единичной форме, чтобы вторая матрица оказалась обратной исходной*/
     for (int k = 0; k < n; k++)
     {
@@ -101,44 +104,51 @@ void ReversedMatr()
 }
 
 
-void Disrep()
-{
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            b[i][j] = a[i][j];            
-        }       
-    }
-    cout << "\n";
-    //for (int i = 0; i < n; i++)
-    //{       
-    //    tempX[i] = a[i][n];      
-    //}
-
-    for (int i = 0; i < n; i++)
-    {
-        cout << tempX[i] << " ";
-        cout << "\n";
-    }
-    for (int i = 0; i < n; i++)
-    {
-        disrep[i] = tempX[i];
-        for (int j = 0; j < n; j++)
-        {
-            disrep[i] -= b[i][j] * perX[j];
-        }
-    }
-}
+//void Disrep()
+//{
+//    for (int i = 0; i < n; i++)
+//    {
+//        for (int j = 0; j < n; j++)
+//        {
+//            b[i][j] = a[i][j];            
+//        }       
+//    }
+//    cout << "\n";
+//    //for (int i = 0; i < n; i++)
+//    //{       
+//    //    tempX[i] = a[i][n];      
+//    //}
+//
+//    for (int i = 0; i < n; i++)
+//    {
+//        cout << tempX[i] << " ";
+//        cout << "\n";
+//    }
+//    for (int i = 0; i < n; i++)
+//    {
+//        disrep[i] = tempX[i];
+//        for (int j = 0; j < n; j++)
+//        {
+//            disrep[i] -= b[i][j] * perX[j];
+//        }
+//    }
+//}
 
 int main()
 {
-
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n + 2; j++)
+        {
+            aCopy[i][j] = a[i][j];            
+        }       
+    }
     setlocale(LC_ALL, "Russian");
 
     double* x;
     x = (double*)malloc(n * sizeof(double));
-    
+    double* y;
+    y = (double*)malloc(n * sizeof(double));
     ReversedMatr();
     //fstream fi;
     //fi.open("matrix.txt", ifstream::in);
@@ -163,85 +173,143 @@ int main()
     //    cout << "\n";
     //}
     //fi.close();
+    //for ()
 
-    for (k = 0; k < n; k++) 
+
+    for (int s = 0; s < 2; s++)
     {
-        temp = abs(a[k][k]);
-        i = k;
-        for (m = k + 1; m < n; m++) //Поиск максимального элемента столбце
-            if (abs(a[m][k]) > temp)
+        for (i = 0; i < n; i++)
+        {
+            for (j = 0; j < n + 2; j++)
             {
-                i = m;
-                temp = abs(a[m][k]);
+                cout << a[i][j] << " ";
+            }
+            cout << "\n";
+        }
+
+        for (k = 0; k < n; k++)
+        {
+            temp = abs(a[k][k]);
+            i = k;
+            for (m = k + 1; m < n; m++) //Поиск максимального элемента столбце
+                if (abs(a[m][k]) > temp)
+                {
+                    i = m;
+                    temp = abs(a[m][k]);
+                }
+
+            if (i != k)  //Перестановка строк если главный элемент столбца в другой строке
+            {
+                perkol++;   //Увеличение счётчика количества перестановок для знака определителя
+                for (j = k; j < n + 1; j++)
+                {
+                    bb = a[k][j];
+                    a[k][j] = a[i][j];
+                    a[i][j] = bb;
+                }
             }
 
-        if (i != k)  //Перестановка строк если главный элемент столбца в другой строке
-        {
-            perkol++;   //Увеличение счётчика количества перестановок для знака определителя
+            det *= a[k][k] * pow((-1), perkol);  //Вычисление определителя матрицы        
+            temp = a[k][k];
+
+            //Преобразование строк (Вычисление масштабирующих множителей)
             for (j = k; j < n + 1; j++)
             {
-                bb = a[k][j];
-                a[k][j] = a[i][j];
-                a[i][j] = bb;            
+                a[k][j] = a[k][j] / temp;
             }
-        }       
+            for (i = k + 1; i < n; i++)//преобразование строк с помощью k-ой строки
+            {
+                bb = a[i][k];
+                a[i][k] = 0;
+                if (bb != 0)
+                    for (j = k; j < n + 1; j++)
+                    {
+                        a[i][j] = a[i][j] - bb * a[k][j];
+                    }
+            }
+        }
+
+        if (det == 0)   //Проверка определителя
+        {
+            cout << "Матрица не вырожденная. Система не имеет решений" << endl;
+            exit(1);
+        }
+
+        cout << "Преобразованная матрица: " << endl;
+        for (i = 0; i < n; i++)
+        {
+            for (j = 0; j < n; j++)
+            {
+
+                cout << a[i][j] << " ";
+            }
+            cout << "\n";
+        }
+        //Обратный ход, нахождение X
+        for (i = n - 1; i >= 0; i--)
+        {
+            perX[s][i] = 0;
+            //tempX[i] = 0;
+
+            temp = a[i][n];
+            //bb = a[i][n];
+            for (j = n + 1; j > i; j--)
+            {
+                temp = temp - a[i][j] * perX[s][j];
+                //bb = bb - a[i][j] * tempX[j];
+            }
+            perX[s][i] = temp;
+            //tempX[i] = bb;
         
-        det *= a[k][k] * pow((-1),perkol);  //Вычисление определителя матрицы        
-        temp = a[k][k];  
+        
 
-        //Преобразование строк (Вычисление масштабирующих множителей)
-        for (j = k; j < n + 1; j++)
-        {
-            a[k][j] = a[k][j] / temp;
         }
-        for (i = k + 1; i < n; i++)//преобразование строк с помощью k-ой строки
+
+        for (int i = 0; i < n; i++)
         {
-            bb = a[i][k];
-            a[i][k] = 0;
-            if (bb != 0)
-                for (j = k + 1; j < n + 1; j++)
-                {
-                    a[i][j] = a[i][j] - bb * a[k][j];
-                }
+            for (int j = 0; j < n + 2; j++)
+            {
+                a[i][j] = aCopy[i][j];
+            }
+        }
+        det = 1; 
+        perkol = 0;
+        for (int i = 0; i < n; i++)
+        {
+            bb = a[i][n];
+            a[i][n] = a[i][n + s + 1];
+            a[i][n + s + 1] = bb;
         }
     }
 
-    if (det == 0)   //Проверка определителя
-    {
-        cout << "Матрица не вырожденная. Система не имеет решений" << endl;
-        exit(1);
-    }
+    //for (i = n - 1; i >= 0; i--)
+    //{
+    //    tempX[i] = 0;
 
-    cout << "Преобразованная матрица: " << endl;
-    for (i = 0; i < n; i++)
-    {
-        for (j = 0; j < n; j++)
-        {
+    //    bb = a[i][n];
+    //    for (j = n + 2; j > i; j--)
+    //    {
 
-            cout << a[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    //Обратный ход, нахождение X
-    for (i = n - 1; i >= 0; i--)   
-    {
-        x[i] = 0;
-        temp = a[i][n];
-        for (j = n; j > i; j--)
-            temp = temp - a[i][j] * x[j];
-        x[i] = temp;
-    }
+    //        bb = bb - a[i][j] * tempX[j];
+    //    }
+    //    tempX[i] = bb;
+
+    //}
        
     cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
-    for (i = 0; i < n; i++)
-    {
+    for (int s = 0; s < 2; s++)
+        for (i = 0; i < n; i++)
+        {
         cout << "x[" << i + 1 << "]=";// << x[i];
-        tempX[i] = x[i];
-        perX[i] = x[i];
-        isPrime(x[i]); 
+        //tempX[i] = x[i];
+        //perX[i] = x[i];
+        isPrime(perX[s][i]); 
+
+
+
         cout << endl; 
 
-    }
+        }
     cout << "\n" << "Determinant : " << det << endl;
     cout << "\n" <<"Обратная матрица:\n";
     
@@ -253,11 +321,11 @@ int main()
         }
         cout << "\n";
     }
-    Disrep();
+    /*Disrep();
     for (i = 0; i < n; i++)
     {       
         cout << disrep[i] << " ";       
         cout << "\n";
-    }
+    }*/
     return 0;
 }
