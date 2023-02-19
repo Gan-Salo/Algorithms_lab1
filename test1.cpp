@@ -9,14 +9,14 @@
 #include <string>
 
 using namespace std;
-const int n = 4;
+const int n = 10;
 int i, j, m, k, perkol = 0;
 double aa, bb, temp,  det = 1;
 
-double a[n][n + 2] = { {5, 7,  6,  5, 23.01, 1},   //матрица коэффициентов, где последний столбец - правая часть системы
-{7, 10,  8,  7, 31.99, 0},
-{6, 8,  10,   9, 32.99, 0},
-{5, 7,  9,   10, 31.01, 0} };
+//double a[n][n + 2] = { {5, 7,  6,  5, 23.01, 1},   //матрица коэффициентов, где последний столбец - правая часть системы
+//{7, 10,  8,  7, 31.99, 0},
+//{6, 8,  10,   9, 32.99, 0},
+//{5, 7,  9,   10, 31.01, 0} };
 
 double aCopy[n][n + 2] = {};
 double b[n][n] = {};
@@ -48,60 +48,60 @@ void isPrime(double val)
 }
 
 /*Вычисление обратной матрицы*/
-void ReversedMatr()
-{
-    /*В одну матрицу копируем значения из исходной, другую делаем единичной*/
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            b[i][j] = a[i][j];
-            if (i == j)
-                c[i][j] = 1;
-            else
-                c[i][j] = 0;
-        }
-    }
-
-    
-    /*Приводим исходную матрицу к единичной форме, чтобы вторая матрица оказалась обратной исходной*/
-    for (int k = 0; k < n; k++)
-    {
-        temp = b[k][k];     //Разрешающий элемент на главной диагонали
-        
-        for (int j = 0; j < n; j++)   //Преобразуем элементы главной диагонали в единицу с помощью деления
-        {
-            b[k][j] = b[k][j] / temp;
-            c[k][j] = c[k][j] / temp;
-        }
-
-        for (int i = k + 1; i < n; i++)     //Обнуляем элементы столбца под эл-ом гл. диагонали, отнимая от нижестоящих строк домноженные элементы строки с текущим эл-ом на гл. диагонали
-        {
-            temp = b[i][k];
-
-            for (int j = 0; j < n; j++)
-            {
-                b[i][j] -= b[k][j] * temp;
-                c[i][j] -= c[k][j] * temp;
-            }
-        }
-    }
-
-    for (int k = n - 1; k > 0; k--)     //Обнуляем элементы выше главной диагонали, проводя аналогичные вычисления, взяв в качестве разрешающего элемента единицу последней строки
-    {
-        for (int i = k - 1; i >= 0; i--)
-        {
-            temp = b[i][k];
-
-            for (int j = 0; j < n; j++)
-            {
-                b[i][j] -= b[k][j] * temp;
-                c[i][j] -= c[k][j] * temp;
-            }
-        }
-    }
-
-}
+//void ReversedMatr()
+//{
+//    /*В одну матрицу копируем значения из исходной, другую делаем единичной*/
+//    for (int i = 0; i < n; i++)
+//    {
+//        for (int j = 0; j < n; j++)
+//        {
+//            b[i][j] = a[i][j];
+//            if (i == j)
+//                c[i][j] = 1;
+//            else
+//                c[i][j] = 0;
+//        }
+//    }
+//
+//    
+//    /*Приводим исходную матрицу к единичной форме, чтобы вторая матрица оказалась обратной исходной*/
+//    for (int k = 0; k < n; k++)
+//    {
+//        temp = b[k][k];     //Разрешающий элемент на главной диагонали
+//        
+//        for (int j = 0; j < n; j++)   //Преобразуем элементы главной диагонали в единицу с помощью деления
+//        {
+//            b[k][j] = b[k][j] / temp;
+//            c[k][j] = c[k][j] / temp;
+//        }
+//
+//        for (int i = k + 1; i < n; i++)     //Обнуляем элементы столбца под эл-ом гл. диагонали, отнимая от нижестоящих строк домноженные элементы строки с текущим эл-ом на гл. диагонали
+//        {
+//            temp = b[i][k];
+//
+//            for (int j = 0; j < n; j++)
+//            {
+//                b[i][j] -= b[k][j] * temp;
+//                c[i][j] -= c[k][j] * temp;
+//            }
+//        }
+//    }
+//
+//    for (int k = n - 1; k > 0; k--)     //Обнуляем элементы выше главной диагонали, проводя аналогичные вычисления, взяв в качестве разрешающего элемента единицу последней строки
+//    {
+//        for (int i = k - 1; i >= 0; i--)
+//        {
+//            temp = b[i][k];
+//
+//            for (int j = 0; j < n; j++)
+//            {
+//                b[i][j] -= b[k][j] * temp;
+//                c[i][j] -= c[k][j] * temp;
+//            }
+//        }
+//    }
+//
+//}
 
 
 //void Disrep()
@@ -136,62 +136,69 @@ void ReversedMatr()
 
 int main()
 {
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n + 2; j++)
-        {
-            aCopy[i][j] = a[i][j];            
-        }       
-    }
+
     setlocale(LC_ALL, "Russian");
 
     double* x;
     x = (double*)malloc(n * sizeof(double));
     double* y;
     y = (double*)malloc(n * sizeof(double));
-    ReversedMatr();
-    //fstream fi;
-    //fi.open("matrix.txt", ifstream::in);
+   // ReversedMatr();
+    fstream fi;
+    fi.open("matrix.txt", ifstream::in);
 
-    //int fail = 0;
-    //double tab[3][3] = {};
+    int fail = 0, msize = 0, vsize = 0;
+    double tab[n][2*n] = {}, /*vec[n][n] = {},*/ a[n][2*n] = {};
 
-    //if (!fi)
-    //{
-    //    cerr << "ошибка!\n";
-    //    exit(1);
-    //}
-    //
-    //for (i = 0; i < 3; i++)
-    //    for (j = 0; j < 3; j++)
-    //        fi >> tab[i][j];
-
-    //for (i = 0; i < 3; i++)
-    //{ 
-    //    for (j = 0; j < 3; j++)
-    //        cout << tab[i][j] * 2 << " ";
-    //    cout << "\n";
-    //}
-    //fi.close();
-    //for ()
-
-
-    for (int s = 0; s < 2; s++)
+    if (!fi)
     {
-        for (i = 0; i < n; i++)
+        cerr << "ошибка!\n";
+        exit(1);
+    }
+    fi >> msize;
+
+    for (i = 0; i < msize; i++)
+        for (j = 0; j < msize; j++)
+            fi >> a[i][j];
+
+    fi >> vsize;
+
+    for (i = 0; i < msize; i++)
+        for (j = 0; j < vsize; j++)
+            fi >> a[i][j + msize];
+
+ /*   for (i = 0; i < msize; i++)
+    { 
+        for (j = 0; j < msize + vsize; j++)
+            cout << a[i][j] << " ";
+        cout << "\n";
+    }*/
+    fi.close();
+
+    for (int i = 0; i < msize; i++)
+    {
+        for (int j = 0; j < msize + vsize; j++)
         {
-            for (j = 0; j < n + 2; j++)
+            aCopy[i][j] = a[i][j];
+        }
+    }
+
+    for (int s = 0; s < vsize; s++)
+    {
+        for (i = 0; i < msize; i++)
+        {
+            for (j = 0; j < msize + vsize; j++)
             {
                 cout << a[i][j] << " ";
             }
             cout << "\n";
         }
 
-        for (k = 0; k < n; k++)
+        for (k = 0; k < msize; k++)
         {
             temp = abs(a[k][k]);
             i = k;
-            for (m = k + 1; m < n; m++) //Поиск максимального элемента столбце
+            for (m = k + 1; m < msize; m++) //Поиск максимального элемента столбце
                 if (abs(a[m][k]) > temp)
                 {
                     i = m;
@@ -201,7 +208,7 @@ int main()
             if (i != k)  //Перестановка строк если главный элемент столбца в другой строке
             {
                 perkol++;   //Увеличение счётчика количества перестановок для знака определителя
-                for (j = k; j < n + 1; j++)
+                for (j = k; j < msize + 1; j++)
                 {
                     bb = a[k][j];
                     a[k][j] = a[i][j];
@@ -213,16 +220,16 @@ int main()
             temp = a[k][k];
 
             //Преобразование строк (Вычисление масштабирующих множителей)
-            for (j = k; j < n + 1; j++)
+            for (j = k; j < msize + 1; j++)
             {
                 a[k][j] = a[k][j] / temp;
             }
-            for (i = k + 1; i < n; i++)//преобразование строк с помощью k-ой строки
+            for (i = k + 1; i < msize; i++)//преобразование строк с помощью k-ой строки
             {
                 bb = a[i][k];
                 a[i][k] = 0;
                 if (bb != 0)
-                    for (j = k; j < n + 1; j++)
+                    for (j = k; j < msize + 1; j++)
                     {
                         a[i][j] = a[i][j] - bb * a[k][j];
                     }
@@ -236,9 +243,9 @@ int main()
         }
 
         cout << "Преобразованная матрица: " << endl;
-        for (i = 0; i < n; i++)
+        for (i = 0; i < msize; i++)
         {
-            for (j = 0; j < n; j++)
+            for (j = 0; j < msize; j++)
             {
 
                 cout << a[i][j] << " ";
@@ -246,14 +253,14 @@ int main()
             cout << "\n";
         }
         //Обратный ход, нахождение X
-        for (i = n - 1; i >= 0; i--)
+        for (i = msize - 1; i >= 0; i--)
         {
             perX[s][i] = 0;
             //tempX[i] = 0;
 
-            temp = a[i][n];
+            temp = a[i][msize];
             //bb = a[i][n];
-            for (j = n + 1; j > i; j--)
+            for (j = msize + 1; j > i; j--)
             {
                 temp = temp - a[i][j] * perX[s][j];
                 //bb = bb - a[i][j] * tempX[j];
@@ -265,20 +272,20 @@ int main()
 
         }
 
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < msize; i++)
         {
-            for (int j = 0; j < n + 2; j++)
+            for (int j = 0; j < msize + vsize; j++)
             {
                 a[i][j] = aCopy[i][j];
             }
         }
         det = 1; 
         perkol = 0;
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < msize; i++)
         {
-            bb = a[i][n];
-            a[i][n] = a[i][n + s + 1];
-            a[i][n + s + 1] = bb;
+            bb = a[i][msize];
+            a[i][msize] = a[i][msize + s + 1];
+            a[i][msize + s + 1] = bb;
         }
     }
 
@@ -297,8 +304,8 @@ int main()
     //}
        
     cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
-    for (int s = 0; s < 2; s++)
-        for (i = 0; i < n; i++)
+    for (int s = 0; s < vsize; s++)
+        for (i = 0; i < msize; i++)
         {
         cout << "x[" << i + 1 << "]=";// << x[i];
         //tempX[i] = x[i];
@@ -313,14 +320,14 @@ int main()
     cout << "\n" << "Determinant : " << det << endl;
     cout << "\n" <<"Обратная матрица:\n";
     
-    for (i = 0; i < n; i++)
-    {
-        for (j = 0; j < n; j++)
-        {           
-            cout << c[i][j] << " ";
-        }
-        cout << "\n";
-    }
+    //for (i = 0; i < msize; i++)
+    //{
+    //    for (j = 0; j < msize; j++)
+    //    {           
+    //        cout << c[i][j] << " ";
+    //    }
+    //    cout << "\n";
+    //}
     /*Disrep();
     for (i = 0; i < n; i++)
     {       
