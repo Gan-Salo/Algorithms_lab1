@@ -18,7 +18,7 @@ double aa, bb, temp,  det = 1;
 //{6, 8,  10,   9, 32.99, 0},
 //{5, 7,  9,   10, 31.01, 0} };
 
-double aCopy[n][n + 2] = {};
+double aCopy[n][2 * n] = {};
 double b[n][n] = {};
 double c[n][n] = {};
 double tempX[n], perX[n][n];
@@ -104,77 +104,8 @@ void isPrime(double val)
 //}
 
 
-//void Disrep()
-//{
-//    for (int i = 0; i < n; i++)
-//    {
-//        for (int j = 0; j < n; j++)
-//        {
-//            b[i][j] = a[i][j];            
-//        }       
-//    }
-//    cout << "\n";
-//    //for (int i = 0; i < n; i++)
-//    //{       
-//    //    tempX[i] = a[i][n];      
-//    //}
-//
-//    for (int i = 0; i < n; i++)
-//    {
-//        cout << tempX[i] << " ";
-//        cout << "\n";
-//    }
-//    for (int i = 0; i < n; i++)
-//    {
-//        disrep[i] = tempX[i];
-//        for (int j = 0; j < n; j++)
-//        {
-//            disrep[i] -= b[i][j] * perX[j];
-//        }
-//    }
-//}
-
-int main()
+void CountMart(double a[n][2* n], int msize, int vsize)
 {
-
-    setlocale(LC_ALL, "Russian");
-
-    double* x;
-    x = (double*)malloc(n * sizeof(double));
-    double* y;
-    y = (double*)malloc(n * sizeof(double));
-   // ReversedMatr();
-    fstream fi;
-    fi.open("matrix.txt", ifstream::in);
-
-    int fail = 0, msize = 0, vsize = 0;
-    double tab[n][2*n] = {}, /*vec[n][n] = {},*/ a[n][2*n] = {};
-
-    if (!fi)
-    {
-        cerr << "ошибка!\n";
-        exit(1);
-    }
-    fi >> msize;
-
-    for (i = 0; i < msize; i++)
-        for (j = 0; j < msize; j++)
-            fi >> a[i][j];
-
-    fi >> vsize;
-
-    for (i = 0; i < msize; i++)
-        for (j = 0; j < vsize; j++)
-            fi >> a[i][j + msize];
-
- /*   for (i = 0; i < msize; i++)
-    { 
-        for (j = 0; j < msize + vsize; j++)
-            cout << a[i][j] << " ";
-        cout << "\n";
-    }*/
-    fi.close();
-
     for (int i = 0; i < msize; i++)
     {
         for (int j = 0; j < msize + vsize; j++)
@@ -185,14 +116,14 @@ int main()
 
     for (int s = 0; s < vsize; s++)
     {
-        for (i = 0; i < msize; i++)
+        /*for (i = 0; i < msize; i++)
         {
             for (j = 0; j < msize + vsize; j++)
             {
                 cout << a[i][j] << " ";
             }
             cout << "\n";
-        }
+        }*/
 
         for (k = 0; k < msize; k++)
         {
@@ -267,8 +198,7 @@ int main()
             }
             perX[s][i] = temp;
             //tempX[i] = bb;
-        
-        
+
 
         }
 
@@ -279,7 +209,7 @@ int main()
                 a[i][j] = aCopy[i][j];
             }
         }
-        det = 1; 
+        det = 1;
         perkol = 0;
         for (int i = 0; i < msize; i++)
         {
@@ -302,7 +232,74 @@ int main()
     //    tempX[i] = bb;
 
     //}
-       
+
+}
+
+int main()
+{
+    fstream clear_file("answers.txt", ios::out);
+    clear_file.close();
+
+    setlocale(LC_ALL, "Russian");
+
+   // ReversedMatr();
+    
+    fstream fi; 
+
+    fi.open("matrix.txt", ifstream::in);
+
+    int fail = 0, msize = 0, vsize = 0;
+    double obr[n][2*n] = {}, a[n][2*n] = {};
+
+    if (!fi)
+    {
+        cerr << "ошибка!\n";
+        exit(1);
+    }
+    fi >> msize;
+
+    for (i = 0; i < msize; i++)
+        for (j = 0; j < msize; j++)
+            fi >> a[i][j];
+
+    fi >> vsize;
+
+    for (i = 0; i < msize; i++)
+        for (j = 0; j < vsize; j++)
+            fi >> a[i][j + msize];
+
+ /*   for (i = 0; i < msize; i++)
+    { 
+        for (j = 0; j < msize + vsize; j++)
+            cout << a[i][j] << " ";
+        cout << "\n";
+    }*/
+    fi.close();
+
+    for (int i = 0; i < msize; i++)
+    {
+        for (int j = 0; j < msize; j++)
+        {
+            obr[i][j] = a[i][j];
+        }
+    }
+
+    for (i = 0; i < msize; i++)
+        for (j = 0; j < msize; j++)
+            if (i == j)
+            obr[i][j + msize] = 1;
+    
+    cout << "Обр исход" << "\n";
+    for (i = 0; i < msize; i++)
+    {
+        for (j = 0; j < msize * 2; j++)
+            cout << obr[i][j] << " ";
+        cout << "\n";
+    }
+
+   CountMart(a, msize, vsize);
+
+
     cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
     for (int s = 0; s < vsize; s++)
         for (i = 0; i < msize; i++)
@@ -312,14 +309,64 @@ int main()
         //perX[i] = x[i];
         isPrime(perX[s][i]); 
 
-
-
         cout << endl; 
 
         }
-    cout << "\n" << "Determinant : " << det << endl;
-    cout << "\n" <<"Обратная матрица:\n";
+    cout << "\n" << "Определитель : " << det << endl;
     
+    ofstream fo;
+    fo.open("answers.txt", ios::app);
+
+    if (fo.is_open())
+    {
+        fo << "Решение системы:\n";
+
+        for (i = 0; i < msize; i++)
+        {
+            for (int s = 0; s < vsize; s++)
+            {
+                fo << perX[s][i] << " ";
+            }
+            fo << "\n";
+        }
+    }
+
+    fo.close();
+
+
+
+    CountMart(obr, msize, msize);
+    cout << "\n" <<"Обратная матрица : \n";
+
+    cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
+    for (int s = 0; s < msize; s++)
+        for (i = 0; i < msize; i++)
+        {
+            cout << "x[" << i + 1 << "]=";
+            isPrime(perX[s][i]);
+            cout << endl;
+
+        }
+    
+
+    fo.open("answers.txt", ios::app);
+
+    if (fo.is_open())
+    {
+        fo << "Обратная матрица : \n"; 
+        for (i = 0; i < msize; i++)
+        {
+            for (int s = 0; s < msize; s++)
+            {       
+                fo << perX[s][i] << " ";
+            }
+            fo << "\n";
+        }     
+    }
+
+    fo.close();
+
+
     //for (i = 0; i < msize; i++)
     //{
     //    for (j = 0; j < msize; j++)
