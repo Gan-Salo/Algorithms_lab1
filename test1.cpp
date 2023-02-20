@@ -13,15 +13,8 @@ const int n = 10;
 int i, j, m, k, perkol = 0;
 double aa, bb, temp,  det = 1;
 
-//double a[n][n + 2] = { {5, 7,  6,  5, 23.01, 1},   //матрица коэффициентов, где последний столбец - правая часть системы
-//{7, 10,  8,  7, 31.99, 0},
-//{6, 8,  10,   9, 32.99, 0},
-//{5, 7,  9,   10, 31.01, 0} };
-
 double aCopy[n][2 * n] = {};
-double b[n][n] = {};
-double c[n][n] = {};
-double tempX[n], perX[n][n];
+double perX[n][n];
 double disrep[n][n];
 
 
@@ -47,95 +40,6 @@ void isPrime(double val)
     printf(buf);
 }
 
-/*Вычисление обратной матрицы*/
-//void ReversedMatr()
-//{
-//    /*В одну матрицу копируем значения из исходной, другую делаем единичной*/
-//    for (int i = 0; i < n; i++)
-//    {
-//        for (int j = 0; j < n; j++)
-//        {
-//            b[i][j] = a[i][j];
-//            if (i == j)
-//                c[i][j] = 1;
-//            else
-//                c[i][j] = 0;
-//        }
-//    }
-//
-//    
-//    /*Приводим исходную матрицу к единичной форме, чтобы вторая матрица оказалась обратной исходной*/
-//    for (int k = 0; k < n; k++)
-//    {
-//        temp = b[k][k];     //Разрешающий элемент на главной диагонали
-//        
-//        for (int j = 0; j < n; j++)   //Преобразуем элементы главной диагонали в единицу с помощью деления
-//        {
-//            b[k][j] = b[k][j] / temp;
-//            c[k][j] = c[k][j] / temp;
-//        }
-//
-//        for (int i = k + 1; i < n; i++)     //Обнуляем элементы столбца под эл-ом гл. диагонали, отнимая от нижестоящих строк домноженные элементы строки с текущим эл-ом на гл. диагонали
-//        {
-//            temp = b[i][k];
-//
-//            for (int j = 0; j < n; j++)
-//            {
-//                b[i][j] -= b[k][j] * temp;
-//                c[i][j] -= c[k][j] * temp;
-//            }
-//        }
-//    }
-//
-//    for (int k = n - 1; k > 0; k--)     //Обнуляем элементы выше главной диагонали, проводя аналогичные вычисления, взяв в качестве разрешающего элемента единицу последней строки
-//    {
-//        for (int i = k - 1; i >= 0; i--)
-//        {
-//            temp = b[i][k];
-//
-//            for (int j = 0; j < n; j++)
-//            {
-//                b[i][j] -= b[k][j] * temp;
-//                c[i][j] -= c[k][j] * temp;
-//            }
-//        }
-//    }
-//
-//}
-
-//void Disrep(double a[n][2 * n], int msize, int s, double perX[n][n])
-//{
-//
-//
-//    //for (int i = 0; i < n; i++)
-//    //{
-//    //    cout << tempX[i] << " ";
-//    //    cout << "\n";
-//    //}
-//    for (int i = 0; i < msize; i++)
-//    {
-//        disrep[s][i] = a[i][msize + 1];
-//        for (int j = 0; j < msize; j++)
-//        {
-//            disrep[s][i] -= b[i][j] * perX[s][j];
-//        }
-//    }   
-// 
-//
-//    cout << "Невязки " << "\n";
-//
-//    for (i = 0; i < msize; i++)
-//    {
-//        for (j = 0; j < msize; j++)
-//        {
-//
-//            cout << disrep[i][j] << " ";
-//        }
-//        cout << "\n";
-//    }
-//}
-
-
 void CountMart(double a[n][2* n], int msize, int vsize)
 {
     for (int i = 0; i < msize; i++)
@@ -148,29 +52,8 @@ void CountMart(double a[n][2* n], int msize, int vsize)
 
     for (int s = 0; s < vsize; s++)
     {
-        /*for (i = 0; i < msize; i++)
-        {
-            for (j = 0; j < msize + vsize; j++)
-            {
-                cout << a[i][j] << " ";
-            }
-            cout << "\n";
-        }*/
-
         for (k = 0; k < msize; k++)
         {
-
-         /*cout << "Преобразованная матрица: " << endl;
-            for (i = 0; i < msize; i++)
-            {
-                for (j = 0; j < msize; j++)
-                {
-
-                    cout << a[i][j] << " ";
-                }
-                cout << "\n";
-            }*/
-
             temp = abs(a[k][k]);
             i = k;
             for (m = k + 1; m < msize; m++) //Поиск максимального элемента столбце
@@ -208,10 +91,7 @@ void CountMart(double a[n][2* n], int msize, int vsize)
                     {
                         a[i][j] = a[i][j] - bb * a[k][j];
                     }
-            }
-
-
-            
+            }          
         }
 
         if (det == 0)   //Проверка определителя
@@ -220,16 +100,6 @@ void CountMart(double a[n][2* n], int msize, int vsize)
             exit(1);
         }
 
-        //cout << "Преобразованная матрица: " << endl;
-        //for (i = 0; i < msize; i++)
-        //{
-        //    for (j = 0; j < msize; j++)
-        //    {
-
-        //        cout << a[i][j] << " ";
-        //    }
-        //    cout << "\n";
-        //}
         //Обратный ход, нахождение X
         for (i = msize - 1; i >= 0; i--)
         {
@@ -251,7 +121,6 @@ void CountMart(double a[n][2* n], int msize, int vsize)
         //Подсчёт невязок
         for (int i = 0; i < msize; i++)
         {
-            //cout << aCopy[i][msize + s] << endl;
             disrep[s][i] = aCopy[i][msize + s];
             for (int j = 0; j < msize; j++)
             {
@@ -259,6 +128,7 @@ void CountMart(double a[n][2* n], int msize, int vsize)
             }
         }
 
+        //Возвращение матрицы для следующего столбца св-ых членов
         for (int i = 0; i < msize; i++)
         {
             for (int j = 0; j < msize + vsize; j++)
@@ -273,29 +143,9 @@ void CountMart(double a[n][2* n], int msize, int vsize)
             bb = a[i][msize];
             a[i][msize] = a[i][msize + s + 1];
             a[i][msize + s + 1] = bb;
-        }
-
-        //Disrep(a, msize, s, perX);
+        }        
     }
-
-    //for (i = n - 1; i >= 0; i--)
-    //{
-    //    tempX[i] = 0;
-
-    //    bb = a[i][n];
-    //    for (j = n + 2; j > i; j--)
-    //    {
-
-    //        bb = bb - a[i][j] * tempX[j];
-    //    }
-    //    tempX[i] = bb;
-
-    //}
-
 }
-
-
-
 
 
 int main()
@@ -305,10 +155,7 @@ int main()
 
     setlocale(LC_ALL, "Russian");
 
-   // ReversedMatr();
-    
     fstream fi; 
-
     fi.open("matrix.txt", ifstream::in);
 
     int fail = 0, msize = 0, vsize = 0;
@@ -330,14 +177,16 @@ int main()
     for (i = 0; i < msize; i++)
         for (j = 0; j < vsize; j++)
             fi >> a[i][j + msize];
+   
+    fi.close();
 
- /*   for (i = 0; i < msize; i++)
-    { 
+    cout << "Исходная расширенная матрица: \n";
+    for (i = 0; i < msize; i++)
+    {
         for (j = 0; j < msize + vsize; j++)
             cout << a[i][j] << " ";
         cout << "\n";
-    }*/
-    fi.close();
+    }
 
     for (int i = 0; i < msize; i++)
     {
@@ -352,29 +201,22 @@ int main()
             if (i == j)
             obr[i][j + msize] = 1;
     
-    cout << "Обр исход" << "\n";
-    for (i = 0; i < msize; i++)
-    {
-        for (j = 0; j < msize * 2; j++)
-            cout << obr[i][j] << " ";
-        cout << "\n";
-    }
 
    CountMart(a, msize, vsize);
   
 
-    cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
+    cout << "\n" << "Решение системы :" << endl;  //Вывод результатов X
     for (int s = 0; s < vsize; s++)
+    {
+        cout << "Столбец №" << s + 1 << " :\n";
         for (i = 0; i < msize; i++)
         {
-        cout << "x[" << i + 1 << "]=";// << x[i];
-        //tempX[i] = x[i];
-        //perX[i] = x[i];
-        isPrime(perX[s][i]); 
-
-        cout << endl; 
+            cout << "x[" << i + 1 << "]=";
+            isPrime(perX[s][i]);
+            cout << endl;
 
         }
+    }
     cout << "\n" << "Определитель : " << det << endl;
     
     ofstream fo;
@@ -396,30 +238,34 @@ int main()
 
     fo.close();
 
+   
+   // printf("left-justified: %-8d\n", 100);
+    cout << "\nНевязки : " << "\n";
 
-    cout << "Невязки : " << "\n";
-
-    for (i = 0; i < msize; i++)
+    for (i = 0; i < vsize; i++)
     {
-        for (j = 0; j < vsize; j++)
+        cout << "\nСтолбец №" << i + 1 << " :\n";
+        for (j = 0; j < msize; j++)
         {
-            cout << disrep[j][i] << " ";
+            
+            cout << disrep[i][j];
+            cout << "\n";
         }
-        cout << "\n";
+        
     }
 
     CountMart(obr, msize, msize);
     cout << "\n" <<"Обратная матрица : \n";
-
-    cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
+  
     for (int s = 0; s < msize; s++)
+    {    
         for (i = 0; i < msize; i++)
-        {
-            cout << "x[" << i + 1 << "]=";
-            isPrime(perX[s][i]);
-            cout << endl;
+        {           
+            cout << perX[s][i] << "  ";
 
         }
+        cout << "\n";
+    }
 
 
     fo.open("answers.txt", ios::app);
@@ -439,20 +285,5 @@ int main()
 
     fo.close();
 
-
-    //for (i = 0; i < msize; i++)
-    //{
-    //    for (j = 0; j < msize; j++)
-    //    {           
-    //        cout << c[i][j] << " ";
-    //    }
-    //    cout << "\n";
-    //}
-    /*Disrep();
-    for (i = 0; i < n; i++)
-    {       
-        cout << disrep[i] << " ";       
-        cout << "\n";
-    }*/
     return 0;
 }
