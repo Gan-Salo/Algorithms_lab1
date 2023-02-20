@@ -22,7 +22,7 @@ double aCopy[n][2 * n] = {};
 double b[n][n] = {};
 double c[n][n] = {};
 double tempX[n], perX[n][n];
-double disrep[n] = {};
+double disrep[n][n];
 
 
 void isPrime(double val)
@@ -103,6 +103,38 @@ void isPrime(double val)
 //
 //}
 
+//void Disrep(double a[n][2 * n], int msize, int s, double perX[n][n])
+//{
+//
+//
+//    //for (int i = 0; i < n; i++)
+//    //{
+//    //    cout << tempX[i] << " ";
+//    //    cout << "\n";
+//    //}
+//    for (int i = 0; i < msize; i++)
+//    {
+//        disrep[s][i] = a[i][msize + 1];
+//        for (int j = 0; j < msize; j++)
+//        {
+//            disrep[s][i] -= b[i][j] * perX[s][j];
+//        }
+//    }   
+// 
+//
+//    cout << "Невязки " << "\n";
+//
+//    for (i = 0; i < msize; i++)
+//    {
+//        for (j = 0; j < msize; j++)
+//        {
+//
+//            cout << disrep[i][j] << " ";
+//        }
+//        cout << "\n";
+//    }
+//}
+
 
 void CountMart(double a[n][2* n], int msize, int vsize)
 {
@@ -127,6 +159,18 @@ void CountMart(double a[n][2* n], int msize, int vsize)
 
         for (k = 0; k < msize; k++)
         {
+
+         /*cout << "Преобразованная матрица: " << endl;
+            for (i = 0; i < msize; i++)
+            {
+                for (j = 0; j < msize; j++)
+                {
+
+                    cout << a[i][j] << " ";
+                }
+                cout << "\n";
+            }*/
+
             temp = abs(a[k][k]);
             i = k;
             for (m = k + 1; m < msize; m++) //Поиск максимального элемента столбце
@@ -165,6 +209,9 @@ void CountMart(double a[n][2* n], int msize, int vsize)
                         a[i][j] = a[i][j] - bb * a[k][j];
                     }
             }
+
+
+            
         }
 
         if (det == 0)   //Проверка определителя
@@ -173,16 +220,16 @@ void CountMart(double a[n][2* n], int msize, int vsize)
             exit(1);
         }
 
-        cout << "Преобразованная матрица: " << endl;
-        for (i = 0; i < msize; i++)
-        {
-            for (j = 0; j < msize; j++)
-            {
+        //cout << "Преобразованная матрица: " << endl;
+        //for (i = 0; i < msize; i++)
+        //{
+        //    for (j = 0; j < msize; j++)
+        //    {
 
-                cout << a[i][j] << " ";
-            }
-            cout << "\n";
-        }
+        //        cout << a[i][j] << " ";
+        //    }
+        //    cout << "\n";
+        //}
         //Обратный ход, нахождение X
         for (i = msize - 1; i >= 0; i--)
         {
@@ -199,7 +246,17 @@ void CountMart(double a[n][2* n], int msize, int vsize)
             perX[s][i] = temp;
             //tempX[i] = bb;
 
-
+        }
+        
+        //Подсчёт невязок
+        for (int i = 0; i < msize; i++)
+        {
+            //cout << aCopy[i][msize + s] << endl;
+            disrep[s][i] = aCopy[i][msize + s];
+            for (int j = 0; j < msize; j++)
+            {
+                disrep[s][i] -= aCopy[i][j] * perX[s][j];
+            }
         }
 
         for (int i = 0; i < msize; i++)
@@ -217,6 +274,8 @@ void CountMart(double a[n][2* n], int msize, int vsize)
             a[i][msize] = a[i][msize + s + 1];
             a[i][msize + s + 1] = bb;
         }
+
+        //Disrep(a, msize, s, perX);
     }
 
     //for (i = n - 1; i >= 0; i--)
@@ -234,6 +293,10 @@ void CountMart(double a[n][2* n], int msize, int vsize)
     //}
 
 }
+
+
+
+
 
 int main()
 {
@@ -298,7 +361,7 @@ int main()
     }
 
    CountMart(a, msize, vsize);
-
+  
 
     cout << "\n" << "Результаты :" << endl;  //Вывод результатов X
     for (int s = 0; s < vsize; s++)
@@ -334,6 +397,16 @@ int main()
     fo.close();
 
 
+    cout << "Невязки : " << "\n";
+
+    for (i = 0; i < msize; i++)
+    {
+        for (j = 0; j < vsize; j++)
+        {
+            cout << disrep[j][i] << " ";
+        }
+        cout << "\n";
+    }
 
     CountMart(obr, msize, msize);
     cout << "\n" <<"Обратная матрица : \n";
@@ -347,7 +420,7 @@ int main()
             cout << endl;
 
         }
-    
+
 
     fo.open("answers.txt", ios::app);
 
